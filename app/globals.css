@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+/* Default body setup */
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  background: #000; /* Default dark background */
+  color: #fff;
+  scroll-behavior: smooth;
+}
+
+/* Smooth transitions for theme & state changes */
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Custom scrollbar for dashboard pages */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #6366f1, #8b5cf6);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+/* Utility: container width */
+.container {
+  @apply max-w-7xl mx-auto px-4;
+}
+
+/* Links */
+a {
+  @apply text-indigo-400 hover:text-indigo-300 transition;
+}
+
+/* Buttons */
+.btn {
+  @apply inline-flex items-center justify-center rounded-lg font-semibold transition;
+}
+
+.btn-primary {
+  @apply bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3;
+}
+
+.btn-outline {
+  @apply border border-indigo-500 text-indigo-400 hover:bg-indigo-600 hover:text-white px-5 py-3;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-bold;
+}
+
+/* Inputs & forms */
+input,
+textarea,
+select {
+  @apply bg-black/40 border border-white/20 rounded-lg text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500;
+}
+
+::placeholder {
+  @apply text-gray-400;
+}
