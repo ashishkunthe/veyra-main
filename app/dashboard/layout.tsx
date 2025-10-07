@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   Menu,
   X,
+  CreditCard,
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -34,10 +35,11 @@ export default function DashboardLayout({
     { href: "/dashboard/clients", icon: Users, label: "Clients" },
     { href: "/dashboard/company", icon: Building2, label: "Company" },
     { href: "/dashboard/analytics", icon: BarChart3, label: "Analytics" },
+    { href: "/dashboard/pricing", icon: CreditCard, label: "Pricing" },
   ];
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-black via-indigo-950 to-black text-white relative overflow-hidden">
+    <div className="flex h-screen bg-[#0b0b1f] text-white relative overflow-hidden">
       {/* ✨ Glowing background */}
       <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-indigo-600 opacity-20 blur-[180px] rounded-full -z-10"></div>
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-700 opacity-20 blur-[200px] rounded-full -z-10"></div>
