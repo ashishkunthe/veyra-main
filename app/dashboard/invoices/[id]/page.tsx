@@ -1,50 +1,96 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Download, CheckCircle2 } from "lucide-react";
-
-const mockInvoices = [
-  {
-    _id: "1",
-    clientName: "Acme Corp",
-    total: 1200,
-    status: "Paid",
-    dueDate: "2023-08-15",
-    createdAt: "2023-07-01",
-    items: [
-      { description: "Website design", amount: 800 },
-      { description: "Hosting (1 year)", amount: 400 },
-    ],
-  },
-  {
-    _id: "2",
-    clientName: "Tech Solutions Inc.",
-    total: 850,
-    status: "Pending",
-    dueDate: "2023-09-01",
-    createdAt: "2023-07-20",
-    items: [{ description: "Mobile App Development", amount: 850 }],
-  },
-  {
-    _id: "3",
-    clientName: "Global Innovations Ltd.",
-    total: 1500,
-    status: "Overdue",
-    dueDate: "2023-07-20",
-    createdAt: "2023-06-15",
-    items: [{ description: "Custom CRM Software", amount: 1500 }],
-  },
-];
+import { ArrowLeft, Download, CheckCircle2, Send } from "lucide-react";
+import axios from "axios";
 
 export default function InvoiceDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
   const [invoice, setInvoice] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
-    const foundInvoice = mockInvoices.find((inv) => inv._id === id);
-    setInvoice(foundInvoice || null);
+    const fetchInvoice = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`http://localhost:4000/invoices/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setInvoice(res.data);
+      } catch (err) {
+        console.error("Error fetching invoice:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInvoice();
   }, [id]);
+
+  const handleDownload = async () => {
+    try {
+      setDownloading(true);
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`http://localhost:4000/invoices/${id}/pdf`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: "blob",
+      });
+
+      // 🧾 Create file link for download
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `invoice-${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+    } catch (err) {
+      console.error("Error downloading PDF:", err);
+      alert("Failed to download invoice PDF");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const handleSend = async () => {
+    try {
+      setSending(true);
+      const token = localStorage.getItem("token");
+      await axios.post(
+        `http://localhost:4000/invoices/${id}/send`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert("📨 Invoice sent to client successfully!");
+    } catch (err) {
+      console.error("Error sending invoice:", err);
+      alert("Failed to send invoice email");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const markAsPaid = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:4000/invoices/${id}`,
+        { status: "paid" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setInvoice({ ...invoice, status: "paid" });
+      alert("✅ Invoice marked as paid!");
+    } catch (err) {
+      console.error("Error updating status:", err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="text-center text-gray-400 py-20">Loading invoice...</div>
+    );
+  }
 
   if (!invoice) {
     return (
@@ -65,7 +111,7 @@ export default function InvoiceDetailsPage() {
       {/* 🧾 Invoice Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Invoice #{invoice._id}</h1>
+          <h1 className="text-3xl font-bold mb-2">Invoice #{invoice.id}</h1>
           <p className="text-gray-400">
             Issued on {new Date(invoice.createdAt).toLocaleDateString()}
           </p>
@@ -73,28 +119,37 @@ export default function InvoiceDetailsPage() {
             Status:{" "}
             <span
               className={`font-semibold ${
-                invoice.status === "Paid"
+                invoice.status === "paid"
                   ? "text-green-400"
-                  : invoice.status === "Pending"
+                  : invoice.status === "pending"
                   ? "text-yellow-300"
                   : "text-red-400"
               }`}
             >
-              {invoice.status}
+              {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
             </span>
           </p>
         </div>
 
-        <div className="flex gap-4 mt-4 md:mt-0">
+        <div className="flex flex-wrap gap-3 mt-4 md:mt-0">
           <button
-            onClick={() => alert("📄 Download coming soon!")}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg transition"
+            onClick={handleDownload}
+            disabled={downloading}
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg transition disabled:opacity-60"
           >
-            <Download size={18} /> Download PDF
+            <Download size={18} />{" "}
+            {downloading ? "Downloading..." : "Download PDF"}
           </button>
-          {invoice.status !== "Paid" && (
+          <button
+            onClick={handleSend}
+            disabled={sending}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition disabled:opacity-60"
+          >
+            <Send size={18} /> {sending ? "Sending..." : "Send to Client"}
+          </button>
+          {invoice.status !== "paid" && (
             <button
-              onClick={() => alert("✅ Marked as Paid! (Dummy)")}
+              onClick={markAsPaid}
               className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg transition"
             >
               <CheckCircle2 size={18} /> Mark as Paid
@@ -110,7 +165,11 @@ export default function InvoiceDetailsPage() {
           <strong>Name:</strong> {invoice.clientName}
         </p>
         <p>
-          <strong>Due Date:</strong> {invoice.dueDate}
+          <strong>Email:</strong> {invoice.clientEmail}
+        </p>
+        <p>
+          <strong>Due Date:</strong>{" "}
+          {new Date(invoice.dueDate).toLocaleDateString()}
         </p>
       </div>
 
@@ -122,14 +181,16 @@ export default function InvoiceDetailsPage() {
             <thead>
               <tr className="border-b border-white/20 text-gray-400">
                 <th className="py-2 px-4">Description</th>
-                <th className="py-2 px-4 text-right">Amount</th>
+                <th className="py-2 px-4 text-center">Qty</th>
+                <th className="py-2 px-4 text-right">Price</th>
               </tr>
             </thead>
             <tbody>
               {invoice.items.map((item: any, i: number) => (
                 <tr key={i} className="border-b border-white/10">
                   <td className="py-2 px-4">{item.description}</td>
-                  <td className="py-2 px-4 text-right">₹{item.amount}</td>
+                  <td className="py-2 px-4 text-center">{item.qty}</td>
+                  <td className="py-2 px-4 text-right">₹{item.price}</td>
                 </tr>
               ))}
             </tbody>
@@ -137,8 +198,18 @@ export default function InvoiceDetailsPage() {
         </div>
       </div>
 
-      {/* 💰 Total */}
-      <div className="text-right text-2xl font-bold text-indigo-400">
+      {/* 💰 Payment Info */}
+      <div className="bg-[#141124] border border-white/10 rounded-xl p-5 mt-8">
+        <h2 className="text-lg font-semibold mb-3 text-indigo-400">
+          Payment Details
+        </h2>
+        <p className="text-gray-300 whitespace-pre-wrap">
+          {invoice.paymentDetails || "No payment details provided."}
+        </p>
+      </div>
+
+      {/* 💵 Total */}
+      <div className="text-right text-2xl font-bold text-indigo-400 mt-6">
         Total: ₹{invoice.total}
       </div>
     </div>

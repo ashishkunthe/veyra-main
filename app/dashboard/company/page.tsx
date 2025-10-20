@@ -1,32 +1,79 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { Building2, Save } from "lucide-react";
 
 export default function CompanyPage() {
-  const [companyName, setCompanyName] = useState("Veyra Inc.");
-  const [address, setAddress] = useState(
-    "123 Innovation Drive, Tech City, 10101"
-  );
-  const [taxId, setTaxId] = useState("AB123456789");
-  const [email, setEmail] = useState("contact@veyra.com");
-  const [phone, setPhone] = useState("+1 (555) 123-4567");
+  const [companyId, setCompanyId] = useState<string | null>(null);
+  const [companyName, setCompanyName] = useState("");
+  const [address, setAddress] = useState("");
+  const [taxId, setTaxId] = useState("");
+  const [logoUrl, setLogoUrl] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSave = (e: any) => {
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+  // Fetch company details when the page loads
+  useEffect(() => {
+    const fetchCompany = async () => {
+      try {
+        const res = await axios.get(`http://localhost:4000/company`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = res.data;
+        setCompanyId(data.id);
+        setCompanyName(data.name);
+        setAddress(data.address);
+        setTaxId(data.taxInfo);
+        setLogoUrl(data.logoUrl);
+      } catch (err) {
+        console.log("No company data yet — maybe new user.");
+      }
+    };
+    fetchCompany();
+  }, [token]);
+
+  const handleSave = async (e: any) => {
     e.preventDefault();
-    console.log({ companyName, address, taxId, email, phone });
-    setMessage("✅ Company info saved successfully!");
+    try {
+      const body = {
+        name: companyName,
+        logoUrl,
+        address,
+        taxInfo: taxId,
+      };
+
+      if (companyId) {
+        // Update existing company
+        await axios.put(`http://localhost:4000/company/${companyId}`, body, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setMessage("✅ Company info updated successfully!");
+      } else {
+        // Create new company
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/company`,
+          body,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setCompanyId(res.data.id);
+        setMessage("✅ Company created successfully!");
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage("❌ Failed to save company info");
+    }
+
     setTimeout(() => setMessage(""), 3000);
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-white px-4">
-      {/* Title */}
       <h1 className="text-2xl font-bold mb-8 flex items-center gap-2">
         <Building2 className="text-indigo-400" /> Company Details
       </h1>
 
-      {/* Form Container */}
       <form
         onSubmit={handleSave}
         className="w-full max-w-3xl bg-transparent border border-white/10 rounded-2xl p-8 space-y-6 shadow-xl"
@@ -55,9 +102,9 @@ export default function CompanyPage() {
           />
         </div>
 
-        {/* Tax ID */}
+        {/* Tax Info */}
         <div>
-          <label className="block text-sm text-gray-400 mb-2">Tax ID</label>
+          <label className="block text-sm text-gray-400 mb-2">Tax Info</label>
           <input
             type="text"
             className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -66,35 +113,23 @@ export default function CompanyPage() {
           />
         </div>
 
-        {/* Email & Phone side-by-side */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm text-gray-400 mb-2">Email</label>
-            <input
-              type="email"
-              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm text-gray-400 mb-2">Phone</label>
-            <input
-              type="text"
-              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          </div>
+        {/* Logo URL */}
+        <div>
+          <label className="block text-sm text-gray-400 mb-2">
+            Logo URL (optional)
+          </label>
+          <input
+            type="text"
+            className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            value={logoUrl}
+            onChange={(e) => setLogoUrl(e.target.value)}
+          />
         </div>
 
-        {/* Success message */}
         {message && (
-          <p className="text-green-400 text-sm font-medium">{message}</p>
+          <p className="text-sm font-medium text-green-400">{message}</p>
         )}
 
-        {/* Save Button (bottom-right aligned) */}
         <div className="flex justify-end">
           <button
             type="submit"

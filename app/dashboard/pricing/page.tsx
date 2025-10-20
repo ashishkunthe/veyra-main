@@ -10,6 +10,9 @@ const PLAN_IDS = {
 
 export default function PricingPage() {
   const [currentPlan, setCurrentPlan] = useState<any>(null);
+  const [loadingPlan, setLoadingPlan] = useState<"starter" | "pro" | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -25,23 +28,24 @@ export default function PricingPage() {
 
   const handleSubscribe = async (planType: "starter" | "pro") => {
     try {
+      setLoadingPlan(planType);
       const token = localStorage.getItem("token");
       if (!token) {
         window.location.href = "/auth/login";
         return;
       }
-
       const res = await axios.post(
         "http://localhost:4000/razorpay/create-subscription",
         { planId: PLAN_IDS[planType] },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       const subscription = res.data.subscription;
-      window.location.href = `https://checkout.razorpay.com/v1/checkout.js?subscription_id=${subscription.id}`;
+      window.location.href = subscription.short_url;
     } catch (err: any) {
       console.error(err);
       alert(err.response?.data?.message || "Subscription failed");
+    } finally {
+      setLoadingPlan(null);
     }
   };
 
@@ -82,9 +86,14 @@ export default function PricingPage() {
 
           <button
             onClick={() => handleSubscribe("starter")}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 rounded-full py-3 font-semibold transition"
+            disabled={loadingPlan === "starter"}
+            className={`w-full rounded-full py-3 font-semibold transition ${
+              loadingPlan === "starter"
+                ? "bg-indigo-400 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700"
+            }`}
           >
-            Get Starter
+            {loadingPlan === "starter" ? "Redirecting..." : "Get Starter"}
           </button>
         </div>
 
@@ -108,9 +117,14 @@ export default function PricingPage() {
 
           <button
             onClick={() => handleSubscribe("pro")}
-            className="w-full bg-purple-600 hover:bg-purple-700 rounded-full py-3 font-semibold transition"
+            disabled={loadingPlan === "pro"}
+            className={`w-full rounded-full py-3 font-semibold transition ${
+              loadingPlan === "pro"
+                ? "bg-purple-400 cursor-not-allowed"
+                : "bg-purple-600 hover:bg-purple-700"
+            }`}
           >
-            Go Pro
+            {loadingPlan === "pro" ? "Redirecting..." : "Go Pro"}
           </button>
         </div>
       </div>

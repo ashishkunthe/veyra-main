@@ -1,6 +1,6 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ProtectedRoute({
   children,
@@ -8,17 +8,50 @@ export default function ProtectedRoute({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const [isChecking, setIsChecking] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/auth/login");
-    } else {
-      setLoading(false);
-    }
+    const verifyAuth = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        // No token → redirect to login
+        if (!token) {
+          router.replace("/auth/login");
+          return;
+        }
+        const res = await fetch("http://localhost:4000/auth/verify", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.ok) {
+          setIsAuthenticated(true);
+        } else {
+          localStorage.removeItem("token");
+          router.replace("/auth/login");
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+        localStorage.removeItem("token");
+        router.replace("/auth/login");
+      } finally {
+        setIsChecking(false);
+      }
+    };
+
+    verifyAuth();
   }, [router]);
 
-  if (loading) return null;
-  return <>{children}</>;
+  // 🌀 Loading state while verifying
+  if (isChecking) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-gray-400">
+        <div className="animate-pulse text-lg">Checking authentication...</div>
+      </div>
+    );
+  }
+
+  // ✅ Render content if authenticated
+  return isAuthenticated ? <>{children}</> : null;
 }

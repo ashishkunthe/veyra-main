@@ -8,9 +8,9 @@ export default function HomePage() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      router.replace("/dashboard"); // ✅ Already logged in → dashboard
+      router.replace("/dashboard");
     } else {
-      router.replace("/auth/login"); // 🔐 Not logged in → login
+      router.replace("/auth/login");
     }
   }, [router]);
 

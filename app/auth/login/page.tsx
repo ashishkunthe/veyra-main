@@ -19,10 +19,10 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-        { email, password }
-      );
+      const res = await axios.post(`http://localhost:4000/auth/login`, {
+        email,
+        password,
+      });
       localStorage.setItem("token", res.data.token);
       router.push("/dashboard");
     } catch (err: any) {

@@ -1,17 +1,58 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { PlusCircle, Trash2 } from "lucide-react";
 
 export default function NewInvoicePage() {
   const router = useRouter();
-  const [clientName, setClientName] = useState("");
+  const [companies, setCompanies] = useState<any[]>([]);
+  const [clients, setClients] = useState<any[]>([]);
+  const [companyId, setCompanyId] = useState("");
+  const [clientId, setClientId] = useState("");
   const [clientEmail, setClientEmail] = useState("");
-  const [items, setItems] = useState([{ description: "", amount: "" }]);
+  const [items, setItems] = useState([{ description: "", price: "" }]);
   const [tax, setTax] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const subtotal = items.reduce(
+    (acc, item) => acc + (parseFloat(item.price) || 0),
+    0
+  );
+  const totalAmount = subtotal + (tax / 100) * subtotal;
+
+  // 🧩 Fetch companies and clients dynamically
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const [companyRes, clientRes] = await Promise.all([
+          axios.get("http://localhost:4000/company", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get("http://localhost:4000/clients", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+        setCompanies(
+          Array.isArray(companyRes.data) ? companyRes.data : [companyRes.data]
+        );
+        setClients(clientRes.data);
+      } catch (err) {
+        console.error("Error fetching company/client data:", err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // 🧠 Auto-fill client email when client selected
+  useEffect(() => {
+    if (clientId) {
+      const selected = clients.find((c) => c.id === clientId);
+      setClientEmail(selected?.email || "");
+    }
+  }, [clientId, clients]);
 
   const handleItemChange = (index: number, field: string, value: string) => {
     const updated = [...items];
@@ -19,26 +60,45 @@ export default function NewInvoicePage() {
     setItems(updated);
   };
 
-  const addItem = () => setItems([...items, { description: "", amount: "" }]);
+  const addItem = () => setItems([...items, { description: "", price: "" }]);
   const removeItem = (index: number) =>
     setItems(items.filter((_, i) => i !== index));
 
-  const subtotal = items.reduce(
-    (acc, item) => acc + (parseFloat(item.amount) || 0),
-    0
-  );
-  const totalAmount = subtotal + (tax / 100) * subtotal;
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!companyId || !clientId) {
+      setError(
+        "Please select a company and client before creating an invoice."
+      );
+      return;
+    }
+
     setLoading(true);
     setError("");
 
     try {
       const token = localStorage.getItem("token");
+      const selectedClient = clients.find((c) => c.id === clientId);
       await axios.post(
         "http://localhost:4000/invoices",
-        { clientName, clientEmail, items, tax, total: totalAmount },
+        {
+          companyId,
+          clientId,
+          clientName: selectedClient?.name,
+          clientEmail: selectedClient?.email,
+          items: items.map((i) => ({
+            qty: 1,
+            description: i.description,
+            price: parseFloat(i.price),
+          })),
+          tax,
+          total: totalAmount,
+          dueDate: new Date().toISOString(),
+          isRecurring: false,
+          recurrenceInterval: null,
+          paymentDetails:
+            "Make payment via UPI: ashish@upi or PayPal: paypal.me/ashish",
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       router.push("/dashboard/invoices");
@@ -51,33 +111,44 @@ export default function NewInvoicePage() {
   };
 
   return (
-    <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto mt-12 bg-[#141021]/90 backdrop-blur-lg border border-white/10 rounded-2xl p-8 shadow-lg">
-      <h1 className="text-2xl font-semibold flex items-center gap-2 mb-6">
+    <div className="max-w-xl mx-auto mt-12 bg-[#141021]/90 backdrop-blur-lg border border-white/10 rounded-2xl p-8 shadow-lg">
+      <h1 className="text-2xl font-semibold mb-6 text-white flex items-center gap-2">
         🧾 Create New Invoice
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Client Info */}
+        {/* Company Selection */}
         <div>
-          <h2 className="text-lg font-semibold mb-3 text-white">Client Info</h2>
-          <div className="space-y-4">
-            <input
-              type="text"
-              placeholder="e.g., John Doe"
-              className="w-full px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={clientName}
-              onChange={(e) => setClientName(e.target.value)}
-              required
-            />
-            <input
-              type="email"
-              placeholder="e.g., john.doe@example.com"
-              className="w-full px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={clientEmail}
-              onChange={(e) => setClientEmail(e.target.value)}
-              required
-            />
-          </div>
+          <h2 className="text-lg font-semibold mb-3 text-white">Company</h2>
+          <select
+            value={companyId}
+            onChange={(e) => setCompanyId(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="">Select a company</option>
+            {companies.map((company) => (
+              <option key={company.id} value={company.id}>
+                {company.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Client Selection */}
+        <div>
+          <h2 className="text-lg font-semibold mb-3 text-white">Client</h2>
+          <select
+            value={clientId}
+            onChange={(e) => setClientId(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="">Select a client</option>
+            {clients.map((client) => (
+              <option key={client.id} value={client.id}>
+                {client.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Items */}
@@ -87,21 +158,21 @@ export default function NewInvoicePage() {
             <div key={index} className="flex gap-3 mb-4">
               <input
                 type="text"
-                placeholder="Item or service description"
+                placeholder="Description"
                 value={item.description}
                 onChange={(e) =>
                   handleItemChange(index, "description", e.target.value)
                 }
-                className="flex-1 px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
               <input
                 type="number"
-                placeholder="0.00"
-                value={item.amount}
+                placeholder="Price"
+                value={item.price}
                 onChange={(e) =>
-                  handleItemChange(index, "amount", e.target.value)
+                  handleItemChange(index, "price", e.target.value)
                 }
-                className="w-28 px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-28 px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
               {items.length > 1 && (
                 <button
@@ -114,7 +185,6 @@ export default function NewInvoicePage() {
               )}
             </div>
           ))}
-
           <button
             type="button"
             onClick={addItem}
@@ -129,7 +199,7 @@ export default function NewInvoicePage() {
           <h2 className="text-lg font-semibold mb-3 text-white">Tax (%)</h2>
           <input
             type="number"
-            placeholder="e.g., 10"
+            placeholder="e.g., 18"
             className="w-full px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             value={tax}
             onChange={(e) => setTax(parseFloat(e.target.value))}

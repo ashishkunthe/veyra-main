@@ -16,39 +16,43 @@ export default function ClientsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 🧪 Dummy Data
-    const mockData: Client[] = [
-      {
-        _id: "1",
-        name: "John Doe",
-        email: "john@acme.com",
-        company: "Acme Corp",
-        totalInvoices: 12,
-      },
-      {
-        _id: "2",
-        name: "Jane Smith",
-        email: "jane@techsolutions.io",
-        company: "Tech Solutions",
-        totalInvoices: 8,
-      },
-      {
-        _id: "3",
-        name: "Michael Johnson",
-        email: "michael@globex.com",
-        company: "Globex Inc",
-        totalInvoices: 5,
-      },
-    ];
+    const fetchClients = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`http://localhost:4000/clients`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setClients(
+          data.map((c: any) => ({
+            _id: c.id,
+            name: c.name,
+            email: c.email,
+            company: c.address || "—",
+            totalInvoices: 0, // (You can update later using /analytics)
+          }))
+        );
+      } catch (err) {
+        console.error("Failed to fetch clients:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    setTimeout(() => {
-      setClients(mockData);
-      setLoading(false);
-    }, 600);
+    fetchClients();
   }, []);
 
-  const deleteClient = (id: string) => {
-    setClients(clients.filter((c) => c._id !== id));
+  const deleteClient = async (id: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      await fetch(`http://localhost:4000/clients/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setClients((prev) => prev.filter((c) => c._id !== id));
+    } catch (err) {
+      console.error("Failed to delete client:", err);
+    }
   };
 
   if (loading) {

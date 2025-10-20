@@ -8,21 +8,39 @@ export default function NewClientPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [company, setCompany] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !company) {
-      setError("An error occurred. Please check your input and try again.");
+    if (!name || !email || !phone || !address) {
+      setError("All fields are required.");
       return;
     }
 
     try {
-      console.log("New client added:", { name, email, company });
+      const token = localStorage.getItem("token");
+      const res = await fetch(`http://localhost:4000/clients`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          address,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to create client");
+
       router.push("/dashboard/clients");
     } catch (err) {
-      setError("An error occurred. Please check your input and try again.");
+      console.error(err);
+      setError("An error occurred. Please try again.");
     }
   };
 
@@ -72,14 +90,26 @@ export default function NewClientPage() {
             />
           </div>
 
-          {/* Company */}
+          {/* Phone */}
           <div>
-            <label className="block text-sm text-gray-400 mb-2">Company</label>
+            <label className="block text-sm text-gray-400 mb-2">Phone</label>
             <input
               type="text"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              placeholder="e.g. Veyra Inc."
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="e.g.+9199XXXXXXXX"
+              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-[#1E1E3F] text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          {/* Address */}
+          <div>
+            <label className="block text-sm text-gray-400 mb-2">Address</label>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="e.g. New York"
               className="w-full px-4 py-3 rounded-lg bg-black/30 border border-[#1E1E3F] text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>

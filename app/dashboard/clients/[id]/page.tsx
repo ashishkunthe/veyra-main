@@ -26,40 +26,29 @@ export default function ClientDetailPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 🧪 Mock client + invoice data
-    const mockClient: Client = {
-      _id: params.id as string,
-      name: "Tech Solutions Inc.",
-      email: "contact@techsolutions.com",
-      company: "Tech Solutions Inc.",
+    const fetchClient = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`http://localhost:4000/clients/${params.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setClient({
+          _id: data.id,
+          name: data.name,
+          email: data.email,
+          company: data.address || "—",
+        });
+
+        // Later we’ll link invoices to this client (GET /invoices?clientId=)
+        setInvoices([]);
+      } catch (err) {
+        console.error("Failed to fetch client details:", err);
+      } finally {
+        setLoading(false);
+      }
     };
-
-    const mockInvoices: Invoice[] = [
-      {
-        _id: "INV-2023-001",
-        total: 5000,
-        status: "Paid",
-        dueDate: "2023-01-15",
-      },
-      {
-        _id: "INV-2023-002",
-        total: 3500,
-        status: "Pending",
-        dueDate: "2023-02-28",
-      },
-      {
-        _id: "INV-2023-003",
-        total: 2000,
-        status: "Overdue",
-        dueDate: "2023-03-15",
-      },
-    ];
-
-    setTimeout(() => {
-      setClient(mockClient);
-      setInvoices(mockInvoices);
-      setLoading(false);
-    }, 600);
+    fetchClient();
   }, [params.id]);
 
   if (loading) {

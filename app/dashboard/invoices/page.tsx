@@ -2,12 +2,13 @@
 import { useEffect, useState } from "react";
 import { PlusCircle, Eye, Trash2, FileText } from "lucide-react";
 import Link from "next/link";
+import axios from "axios";
 
 interface Invoice {
-  _id: string;
+  id: string;
   clientName: string;
   total: number;
-  status: "Paid" | "Pending" | "Overdue";
+  status: "paid" | "pending" | "overdue";
   dueDate: string;
 }
 
@@ -15,40 +16,35 @@ export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Dummy data for now
-    const mockData: Invoice[] = [
-      {
-        _id: "1",
-        clientName: "Acme Corp",
-        total: 1200,
-        status: "Paid",
-        dueDate: "2023-08-15",
-      },
-      {
-        _id: "2",
-        clientName: "Tech Solutions Inc.",
-        total: 850,
-        status: "Pending",
-        dueDate: "2023-09-01",
-      },
-      {
-        _id: "3",
-        clientName: "Global Innovations Ltd.",
-        total: 1500,
-        status: "Overdue",
-        dueDate: "2023-07-20",
-      },
-    ];
-
-    setTimeout(() => {
-      setInvoices(mockData);
+  const fetchInvoices = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("http://localhost:4000/invoices", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setInvoices(res.data);
+    } catch (err) {
+      console.error("Error fetching invoices:", err);
+    } finally {
       setLoading(false);
-    }, 600);
+    }
+  };
+
+  useEffect(() => {
+    fetchInvoices();
   }, []);
 
-  const deleteInvoice = (id: string) => {
-    setInvoices(invoices.filter((inv) => inv._id !== id));
+  const deleteInvoice = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this invoice?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:4000/invoices/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setInvoices((prev) => prev.filter((inv) => inv.id !== id));
+    } catch (err) {
+      console.error("Error deleting invoice:", err);
+    }
   };
 
   if (loading) {
@@ -99,36 +95,39 @@ export default function InvoicesPage() {
             ) : (
               invoices.map((invoice) => (
                 <tr
-                  key={invoice._id}
+                  key={invoice.id}
                   className="border-b border-white/5 hover:bg-white/5 transition"
                 >
                   <td className="p-4 text-gray-200">{invoice.clientName}</td>
                   <td className="p-4 text-gray-300">
-                    ${invoice.total.toFixed(2)}
+                    ₹{invoice.total.toFixed(2)}
                   </td>
                   <td className="p-4">
                     <span
                       className={`px-3 py-1 text-xs font-medium rounded-full ${
-                        invoice.status === "Paid"
+                        invoice.status === "paid"
                           ? "bg-green-500/20 text-green-400"
-                          : invoice.status === "Pending"
+                          : invoice.status === "pending"
                           ? "bg-yellow-500/20 text-yellow-300"
                           : "bg-red-500/20 text-red-400"
                       }`}
                     >
-                      {invoice.status}
+                      {invoice.status.charAt(0).toUpperCase() +
+                        invoice.status.slice(1)}
                     </span>
                   </td>
-                  <td className="p-4 text-gray-300">{invoice.dueDate}</td>
+                  <td className="p-4 text-gray-300">
+                    {new Date(invoice.dueDate).toLocaleDateString()}
+                  </td>
                   <td className="p-4 text-right flex items-center gap-3 justify-end">
                     <Link
-                      href={`/dashboard/invoices/${invoice._id}`}
+                      href={`/dashboard/invoices/${invoice.id}`}
                       className="text-gray-400 hover:text-indigo-400 transition"
                     >
                       <Eye size={18} />
                     </Link>
                     <button
-                      onClick={() => deleteInvoice(invoice._id)}
+                      onClick={() => deleteInvoice(invoice.id)}
                       className="text-gray-400 hover:text-red-500 transition"
                     >
                       <Trash2 size={18} />
