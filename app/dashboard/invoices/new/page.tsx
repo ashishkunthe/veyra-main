@@ -11,6 +11,7 @@ export default function NewInvoicePage() {
   const [companyId, setCompanyId] = useState("");
   const [clientId, setClientId] = useState("");
   const [clientEmail, setClientEmail] = useState("");
+  const [paymentDetails, setPaymentDetails] = useState(""); // 🧾 Now user-input only
   const [items, setItems] = useState([{ description: "", price: "" }]);
   const [tax, setTax] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ export default function NewInvoicePage() {
   );
   const totalAmount = subtotal + (tax / 100) * subtotal;
 
-  // 🧩 Fetch companies and clients dynamically
+  // Fetch companies and clients
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -46,7 +47,7 @@ export default function NewInvoicePage() {
     fetchData();
   }, []);
 
-  // 🧠 Auto-fill client email when client selected
+  // Auto-fill client email
   useEffect(() => {
     if (clientId) {
       const selected = clients.find((c) => c.id === clientId);
@@ -67,9 +68,12 @@ export default function NewInvoicePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyId || !clientId) {
-      setError(
-        "Please select a company and client before creating an invoice."
-      );
+      setError("Please select a company and client before creating an invoice.");
+      return;
+    }
+
+    if (!paymentDetails.trim()) {
+      setError("Please provide payment details before creating the invoice.");
       return;
     }
 
@@ -96,8 +100,7 @@ export default function NewInvoicePage() {
           dueDate: new Date().toISOString(),
           isRecurring: false,
           recurrenceInterval: null,
-          paymentDetails:
-            "Make payment via UPI: ashish@upi or PayPal: paypal.me/ashish",
+          paymentDetails, // 🧾 added by user
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -192,6 +195,17 @@ export default function NewInvoicePage() {
           >
             <PlusCircle size={18} /> Add Item
           </button>
+        </div>
+
+        {/* 🧾 Payment Details (Now after Items) */}
+        <div>
+          <h2 className="text-lg font-semibold mb-3 text-white">Payment Details</h2>
+          <textarea
+            value={paymentDetails}
+            onChange={(e) => setPaymentDetails(e.target.value)}
+            placeholder="Enter payment instructions (e.g., UPI, bank, PayPal)"
+            className="w-full px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[100px]"
+          />
         </div>
 
         {/* Tax */}
