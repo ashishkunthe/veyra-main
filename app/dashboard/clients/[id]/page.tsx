@@ -3,18 +3,19 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Mail, Building2, FileText, Briefcase } from "lucide-react";
 import Link from "next/link";
+import axios from "axios";
 
 interface Client {
-  _id: string;
+  id: string;
   name: string;
   email: string;
   company: string;
 }
 
 interface Invoice {
-  _id: string;
+  id: string;
   total: number;
-  status: "Paid" | "Pending" | "Overdue";
+  status: "paid" | "pending" | "Overdue";
   dueDate: string;
 }
 
@@ -33,15 +34,15 @@ export default function ClientDetailPage() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
+        console.log(data);
         setClient({
-          _id: data.id,
+          id: data.id,
           name: data.name,
           email: data.email,
           company: data.address || "—",
         });
 
-        // Later we’ll link invoices to this client (GET /invoices?clientId=)
-        setInvoices([]);
+        setInvoices(data.invoices);
       } catch (err) {
         console.error("Failed to fetch client details:", err);
       } finally {
@@ -118,17 +119,17 @@ export default function ClientDetailPage() {
           <tbody>
             {invoices.map((inv) => (
               <tr
-                key={inv._id}
+                key={inv.id}
                 className="border-t border-white/5 hover:bg-white/5 transition"
               >
-                <td className="p-4 text-gray-200">{inv._id}</td>
+                <td className="p-4 text-gray-200">{inv.id}</td>
                 <td className="p-4 text-gray-200">${inv.total.toFixed(2)}</td>
                 <td className="p-4">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      inv.status === "Paid"
+                      inv.status === "paid"
                         ? "bg-green-500/20 text-green-400"
-                        : inv.status === "Pending"
+                        : inv.status === "pending"
                         ? "bg-yellow-500/20 text-yellow-300"
                         : "bg-red-500/20 text-red-400"
                     }`}
@@ -139,7 +140,7 @@ export default function ClientDetailPage() {
                 <td className="p-4 text-gray-300">{inv.dueDate}</td>
                 <td className="p-4 text-right">
                   <Link
-                    href={`/dashboard/invoices/${inv._id}`}
+                    href={`/dashboard/invoices/${inv.id}`}
                     className="text-indigo-400 hover:text-indigo-300 font-medium"
                   >
                     View

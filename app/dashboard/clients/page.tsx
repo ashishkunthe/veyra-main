@@ -29,9 +29,10 @@ export default function ClientsPage() {
             name: c.name,
             email: c.email,
             company: c.address || "—",
-            totalInvoices: 0, // (You can update later using /analytics)
+            totalInvoices: c.invoices?.length || 0,
           }))
         );
+        console.log(data);
       } catch (err) {
         console.error("Failed to fetch clients:", err);
       } finally {
