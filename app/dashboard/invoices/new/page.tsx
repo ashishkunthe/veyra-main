@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { PlusCircle, Trash2 } from "lucide-react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function NewInvoicePage() {
   const router = useRouter();
@@ -11,7 +13,8 @@ export default function NewInvoicePage() {
   const [companyId, setCompanyId] = useState("");
   const [clientId, setClientId] = useState("");
   const [clientEmail, setClientEmail] = useState("");
-  const [paymentDetails, setPaymentDetails] = useState(""); // 🧾 Now user-input only
+  const [paymentDetails, setPaymentDetails] = useState("");
+  const [dueDate, setDueDate] = useState("");
   const [items, setItems] = useState([{ description: "", price: "" }]);
   const [tax, setTax] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -68,7 +71,9 @@ export default function NewInvoicePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyId || !clientId) {
-      setError("Please select a company and client before creating an invoice.");
+      setError(
+        "Please select a company and client before creating an invoice."
+      );
       return;
     }
 
@@ -97,10 +102,10 @@ export default function NewInvoicePage() {
           })),
           tax,
           total: totalAmount,
-          dueDate: new Date().toISOString(),
+          dueDate: dueDate,
           isRecurring: false,
           recurrenceInterval: null,
-          paymentDetails, // 🧾 added by user
+          paymentDetails,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -120,7 +125,6 @@ export default function NewInvoicePage() {
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Company Selection */}
         <div>
           <h2 className="text-lg font-semibold mb-3 text-white">Company</h2>
           <select
@@ -196,10 +200,27 @@ export default function NewInvoicePage() {
             <PlusCircle size={18} /> Add Item
           </button>
         </div>
+        {/* Due Date */}
+        <div>
+          <h2 className="text-lg font-semibold mb-3 text-white">Due Date</h2>
+          <DatePicker
+            selected={dueDate ? new Date(dueDate) : null}
+            // @ts-ignore
+            onChange={(date: Date) =>
+              setDueDate(date.toISOString().split("T")[0])
+            }
+            className="w-full px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholderText="Select due date"
+            dateFormat="yyyy-MM-dd"
+            minDate={new Date()}
+          />
+        </div>
 
         {/* 🧾 Payment Details (Now after Items) */}
         <div>
-          <h2 className="text-lg font-semibold mb-3 text-white">Payment Details</h2>
+          <h2 className="text-lg font-semibold mb-3 text-white">
+            Payment Details
+          </h2>
           <textarea
             value={paymentDetails}
             onChange={(e) => setPaymentDetails(e.target.value)}

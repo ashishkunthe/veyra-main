@@ -35,19 +35,16 @@ export default function InvoiceDetailsPage() {
       const token = localStorage.getItem("token");
       const res = await axios.get(`http://localhost:4000/invoices/${id}/pdf`, {
         headers: { Authorization: `Bearer ${token}` },
-        responseType: "blob",
       });
 
-      // 🧾 Create file link for download
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `invoice-${id}.pdf`);
-      document.body.appendChild(link);
-      link.click();
+      const pdfUrl = res.data.pdfUrl;
+      if (!pdfUrl) throw new Error("No PDF URL received");
+
+      // 🧾 Open PDF in new tab
+      window.open(pdfUrl, "_blank");
     } catch (err) {
-      console.error("Error downloading PDF:", err);
-      alert("Failed to download invoice PDF");
+      console.error("Error opening PDF:", err);
+      alert("Failed to open invoice PDF");
     } finally {
       setDownloading(false);
     }
