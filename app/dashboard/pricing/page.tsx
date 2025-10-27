@@ -50,16 +50,16 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-white flex flex-col items-center py-16 px-4">
+    <div className="min-h-screen bg-[#fafafa] text-gray-900 flex flex-col items-center py-16 px-4">
       {/* Title */}
-      <h1 className="text-4xl font-bold mb-4 flex items-center gap-2">
+      <h1 className="text-4xl font-bold mb-4 flex items-center gap-2 text-amber-600">
         📦 Choose Your Plan
       </h1>
 
       {/* Current Plan */}
-      <p className="text-gray-400 mb-12">
+      <p className="text-gray-600 mb-12">
         Your Current Plan:{" "}
-        <span className="text-indigo-400 font-semibold">
+        <span className="text-amber-600 font-semibold">
           {currentPlan ? currentPlan.planName : "Free Plan"}
         </span>
       </p>
@@ -67,20 +67,20 @@ export default function PricingPage() {
       {/* Pricing Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-4xl">
         {/* Starter Plan */}
-        <div className="bg-white/5 border border-white/10 p-10 rounded-2xl text-center shadow-lg hover:scale-105 transition-all duration-300">
-          <h3 className="text-2xl font-semibold mb-2">Starter</h3>
-          <p className="text-5xl font-bold mb-2">₹299</p>
-          <p className="text-gray-400 mb-6">/month</p>
+        <div className="bg-white border border-amber-300/30 p-10 rounded-2xl text-center shadow-lg hover:shadow-amber-300/50 transition-all duration-300">
+          <h3 className="text-2xl font-semibold mb-2 text-gray-900">Starter</h3>
+          <p className="text-5xl font-bold mb-2 text-amber-600">₹299</p>
+          <p className="text-gray-500 mb-6">/month</p>
 
-          <ul className="text-left inline-block space-y-3 mb-8">
+          <ul className="text-left inline-block space-y-3 mb-8 text-gray-800">
             <li className="flex items-center gap-2">
-              <Check className="w-5 h-5 text-green-400" /> 1000 invoices/month
+              <Check className="w-5 h-5 text-green-600" /> 1000 invoices/month
             </li>
             <li className="flex items-center gap-2">
-              <Check className="w-5 h-5 text-green-400" /> Payment links
+              <Check className="w-5 h-5 text-green-600" /> Payment links
             </li>
             <li className="flex items-center gap-2">
-              <Check className="w-5 h-5 text-green-400" /> Real-time tracking
+              <Check className="w-5 h-5 text-green-600" /> Real-time tracking
             </li>
           </ul>
 
@@ -89,8 +89,8 @@ export default function PricingPage() {
             disabled={loadingPlan === "starter"}
             className={`w-full rounded-full py-3 font-semibold transition ${
               loadingPlan === "starter"
-                ? "bg-indigo-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700"
+                ? "bg-amber-200 cursor-not-allowed"
+                : "bg-amber-300 hover:bg-amber-500 text-white"
             }`}
           >
             {loadingPlan === "starter" ? "Redirecting..." : "Get Starter"}
@@ -98,20 +98,20 @@ export default function PricingPage() {
         </div>
 
         {/* Pro Plan */}
-        <div className="bg-white/5 border border-white/10 p-10 rounded-2xl text-center shadow-lg hover:scale-105 transition-all duration-300">
-          <h3 className="text-2xl font-semibold mb-2">Pro</h3>
-          <p className="text-5xl font-bold mb-2">₹749</p>
-          <p className="text-gray-400 mb-6">/month</p>
+        <div className="bg-white border border-amber-300/30 p-10 rounded-2xl text-center shadow-lg hover:shadow-amber-300/50 transition-all duration-300">
+          <h3 className="text-2xl font-semibold mb-2 text-gray-900">Pro</h3>
+          <p className="text-5xl font-bold mb-2 text-amber-600">₹749</p>
+          <p className="text-gray-500 mb-6">/month</p>
 
-          <ul className="text-left inline-block space-y-3 mb-8">
+          <ul className="text-left inline-block space-y-3 mb-8 text-gray-800">
             <li className="flex items-center gap-2">
-              <Check className="w-5 h-5 text-green-400" /> Unlimited invoices
+              <Check className="w-5 h-5 text-green-600" /> Unlimited invoices
             </li>
             <li className="flex items-center gap-2">
-              <Check className="w-5 h-5 text-green-400" /> Priority Support
+              <Check className="w-5 h-5 text-green-600" /> Priority Support
             </li>
             <li className="flex items-center gap-2">
-              <Check className="w-5 h-5 text-green-400" /> Future Pro Tools
+              <Check className="w-5 h-5 text-green-600" /> Future Pro Tools
             </li>
           </ul>
 
@@ -120,8 +120,8 @@ export default function PricingPage() {
             disabled={loadingPlan === "pro"}
             className={`w-full rounded-full py-3 font-semibold transition ${
               loadingPlan === "pro"
-                ? "bg-purple-400 cursor-not-allowed"
-                : "bg-purple-600 hover:bg-purple-700"
+                ? "bg-amber-300 cursor-not-allowed"
+                : "bg-amber-500 hover:bg-amber-600 text-white"
             }`}
           >
             {loadingPlan === "pro" ? "Redirecting..." : "Go Pro"}

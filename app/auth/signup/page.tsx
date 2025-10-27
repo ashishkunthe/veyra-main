@@ -31,10 +31,14 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-black via-indigo-950 to-black text-white px-4">
-      <div className="w-full max-w-sm bg-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-2xl">
-        <h1 className="text-3xl font-bold text-center mb-6">Create Account</h1>
+    <div className="flex items-center justify-center min-h-screen bg-[#fdfdfd] text-gray-900 px-4">
+      <div className="w-full max-w-sm bg-white rounded-2xl p-8 shadow-xl border border-amber-300/30">
+        {/* Title */}
+        <h1 className="text-3xl font-bold text-center mb-6 text-amber-600">
+          Create Account
+        </h1>
 
+        {/* Form */}
         <form onSubmit={handleSignup} className="space-y-4">
           {/* Full Name */}
           <input
@@ -42,7 +46,7 @@ export default function SignupPage() {
             placeholder="Full Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 rounded-lg bg-white border border-amber-300/50 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
           />
 
           {/* Email */}
@@ -51,7 +55,7 @@ export default function SignupPage() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 rounded-lg bg-white border border-amber-300/50 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
           />
 
           {/* Password */}
@@ -60,25 +64,28 @@ export default function SignupPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 rounded-lg bg-white border border-amber-300/50 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
           />
 
-          {/* Error Message */}
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+          {/* Error Msg */}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
-          {/* Sign Up Button */}
+          {/* Button */}
           <button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200 py-3 rounded-lg font-semibold"
+            className="w-full bg-amber-500 hover:bg-amber-600 transition-all duration-200 py-3 rounded-lg font-semibold text-white"
           >
             Sign Up
           </button>
         </form>
 
         {/* Footer */}
-        <p className="text-sm text-gray-400 mt-4 text-center">
+        <p className="text-sm text-gray-600 mt-4 text-center">
           Already have an account?{" "}
-          <a href="/auth/login" className="text-indigo-400 hover:underline">
+          <a
+            href="/auth/login"
+            className="text-amber-600 font-medium hover:underline"
+          >
             Log in
           </a>
         </p>
