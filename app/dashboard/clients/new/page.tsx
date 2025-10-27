@@ -49,12 +49,12 @@ export default function NewClientPage() {
       {/* Header */}
       <div className="w-full max-w-md flex items-center justify-between mb-6">
         <h1 className="text-xl font-semibold flex items-center gap-2">
-          <Users className="w-5 h-5 text-indigo-400" />
+          <Users className="w-5 h-5 text-amber-400" />
           Add New Client
         </h1>
         <Link
           href="/dashboard/clients"
-          className="flex items-center gap-1 text-gray-400 hover:text-indigo-400 transition text-sm"
+          className="flex items-center gap-1 text-gray-400 hover:text-amber-400 transition text-sm"
         >
           <ArrowLeft size={16} />
           Back
@@ -62,7 +62,7 @@ export default function NewClientPage() {
       </div>
 
       {/* Card */}
-      <div className="w-full max-w-md bg-[#11112B]/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10">
+      <div className="w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10">
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Full Name */}
           <div>
@@ -74,7 +74,7 @@ export default function NewClientPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. John Doe"
-              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-[#1E1E3F] text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
 
@@ -86,7 +86,7 @@ export default function NewClientPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="e.g. johndoe@example.com"
-              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-[#1E1E3F] text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
 
@@ -98,7 +98,7 @@ export default function NewClientPage() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="e.g.+9199XXXXXXXX"
-              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-[#1E1E3F] text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
 
@@ -110,7 +110,7 @@ export default function NewClientPage() {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="e.g. New York"
-              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-[#1E1E3F] text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
 
@@ -120,7 +120,7 @@ export default function NewClientPage() {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-[#5B4BFF] hover:bg-[#4A3DDB] transition-all duration-200 py-3 rounded-lg font-medium text-white mt-2"
+            className="w-full bg-amber-500 hover:bg-amber-600 transition-all duration-200 py-3 rounded-lg font-medium text-white mt-2"
           >
             Add Client
           </button>

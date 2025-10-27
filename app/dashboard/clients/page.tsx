@@ -69,24 +69,24 @@ export default function ClientsPage() {
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <span className="inline-flex items-center justify-center w-6 h-6 rounded bg-indigo-600/20 text-indigo-400">
+          <span className="inline-flex items-center justify-center w-6 h-6 rounded bg-amber-500/20 text-amber-400">
             <Users className="animate-pulse-slow" />
           </span>
           Clients
         </h1>
         <Link
           href="/dashboard/clients/new"
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg transition text-sm font-medium"
+          className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg transition text-sm font-medium"
         >
           <PlusCircle size={18} /> Add Client
         </Link>
       </div>
 
       {/* Clients Table */}
-      <div className="overflow-x-auto bg-[#141124] border border-white/10 rounded-2xl">
+      <div className="overflow-x-auto bg-white/5 border border-black rounded-2xl backdrop-blur-lg">
         <table className="w-full text-left min-w-[700px]">
           <thead>
-            <tr className="text-gray-400 text-sm border-b border-white/10">
+            <tr className="text-gray-700 text-sm border-b border-gray-600">
               <th className="p-4 font-medium">Name</th>
               <th className="p-4 font-medium">Email</th>
               <th className="p-4 font-medium">Company</th>
@@ -97,7 +97,7 @@ export default function ClientsPage() {
           <tbody>
             {clients.length === 0 ? (
               <tr>
-                <td colSpan={5} className="text-center p-8 text-gray-400">
+                <td colSpan={5} className="text-center p-8 text-gray-700">
                   No clients found.
                 </td>
               </tr>
@@ -105,16 +105,16 @@ export default function ClientsPage() {
               clients.map((client) => (
                 <tr
                   key={client._id}
-                  className="border-b border-white/5 hover:bg-white/5 transition"
+                  className="border-b border-gray-700 hover:bg-black/10 transition"
                 >
-                  <td className="p-4 text-gray-200">{client.name}</td>
-                  <td className="p-4 text-gray-300">{client.email}</td>
-                  <td className="p-4 text-gray-300">{client.company}</td>
-                  <td className="p-4 text-gray-300">{client.totalInvoices}</td>
+                  <td className="p-4 text-gray-700">{client.name}</td>
+                  <td className="p-4 text-gray-700">{client.email}</td>
+                  <td className="p-4 text-gray-700">{client.company}</td>
+                  <td className="p-4 text-gray-700">{client.totalInvoices}</td>
                   <td className="p-4 text-right flex items-center gap-3 justify-end">
                     <Link
                       href={`/dashboard/clients/${client._id}`}
-                      className="text-gray-400 hover:text-indigo-400 transition"
+                      className="text-gray-400 hover:text-amber-400 transition"
                     >
                       <Eye size={18} />
                     </Link>

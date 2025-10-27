@@ -108,7 +108,7 @@ export default function InvoiceDetailsPage() {
       {/* 🧾 Invoice Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold mb-2 text-gray-900">
+          <h1 className="text-3xl font-bold mb-2 text-gray-500">
             Invoice #{invoice.id}
           </h1>
           <p className="text-gray-600">
@@ -162,13 +162,13 @@ export default function InvoiceDetailsPage() {
         <h2 className="text-2xl font-semibold mb-4 text-gray-900">
           Client Information
         </h2>
-        <p className="text-gray-800">
+        <p className="text-gray-500">
           <strong>Name:</strong> {invoice.clientName}
         </p>
-        <p className="text-gray-800">
+        <p className="text-gray-500">
           <strong>Email:</strong> {invoice.clientEmail}
         </p>
-        <p className="text-gray-800">
+        <p className="text-gray-500">
           <strong>Due Date:</strong>{" "}
           {new Date(invoice.dueDate).toLocaleDateString()}
         </p>
