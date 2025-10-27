@@ -96,11 +96,11 @@ export default function InvoiceDetailsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-lg">
+    <div className="max-w-4xl mx-auto p-6 bg-white border border-gray-200 rounded-2xl shadow-md">
       {/* 🔙 Back Button */}
       <button
         onClick={() => router.push("/dashboard/invoices")}
-        className="flex items-center gap-2 text-indigo-400 hover:text-indigo-300 mb-6"
+        className="flex items-center gap-2 text-amber-600 hover:text-amber-700 mb-6 font-medium"
       >
         <ArrowLeft size={20} /> Back to Invoices
       </button>
@@ -108,19 +108,21 @@ export default function InvoiceDetailsPage() {
       {/* 🧾 Invoice Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Invoice #{invoice.id}</h1>
-          <p className="text-gray-400">
+          <h1 className="text-3xl font-bold mb-2 text-gray-900">
+            Invoice #{invoice.id}
+          </h1>
+          <p className="text-gray-600">
             Issued on {new Date(invoice.createdAt).toLocaleDateString()}
           </p>
-          <p className="text-gray-400">
+          <p className="text-gray-600">
             Status:{" "}
             <span
               className={`font-semibold ${
                 invoice.status === "paid"
-                  ? "text-green-400"
+                  ? "text-green-600"
                   : invoice.status === "pending"
-                  ? "text-yellow-300"
-                  : "text-red-400"
+                  ? "text-amber-600"
+                  : "text-red-600"
               }`}
             >
               {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
@@ -132,22 +134,22 @@ export default function InvoiceDetailsPage() {
           <button
             onClick={handleDownload}
             disabled={downloading}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg transition disabled:opacity-60"
+            className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition disabled:opacity-60"
           >
-            <Download size={18} />{" "}
+            <Download size={18} />
             {downloading ? "Downloading..." : "Download PDF"}
           </button>
           <button
             onClick={handleSend}
             disabled={sending}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition disabled:opacity-60"
+            className="flex items-center gap-2 bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg transition disabled:opacity-60"
           >
             <Send size={18} /> {sending ? "Sending..." : "Send to Client"}
           </button>
           {invoice.status !== "paid" && (
             <button
               onClick={markAsPaid}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg transition"
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition"
             >
               <CheckCircle2 size={18} /> Mark as Paid
             </button>
@@ -157,14 +159,16 @@ export default function InvoiceDetailsPage() {
 
       {/* 👤 Client Info */}
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Client Information</h2>
-        <p>
+        <h2 className="text-2xl font-semibold mb-4 text-gray-900">
+          Client Information
+        </h2>
+        <p className="text-gray-800">
           <strong>Name:</strong> {invoice.clientName}
         </p>
-        <p>
+        <p className="text-gray-800">
           <strong>Email:</strong> {invoice.clientEmail}
         </p>
-        <p>
+        <p className="text-gray-800">
           <strong>Due Date:</strong>{" "}
           {new Date(invoice.dueDate).toLocaleDateString()}
         </p>
@@ -172,11 +176,13 @@ export default function InvoiceDetailsPage() {
 
       {/* 📦 Items Table */}
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Invoice Items</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-gray-900">
+          Invoice Items
+        </h2>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-white/20 text-gray-400">
+              <tr className="border-b border-gray-300 text-gray-600 bg-amber-50/40">
                 <th className="py-2 px-4">Description</th>
                 <th className="py-2 px-4 text-center">Qty</th>
                 <th className="py-2 px-4 text-right">Price</th>
@@ -184,7 +190,10 @@ export default function InvoiceDetailsPage() {
             </thead>
             <tbody>
               {invoice.items.map((item: any, i: number) => (
-                <tr key={i} className="border-b border-white/10">
+                <tr
+                  key={i}
+                  className="border-b border-gray-200 hover:bg-amber-50/40 transition"
+                >
                   <td className="py-2 px-4">{item.description}</td>
                   <td className="py-2 px-4 text-center">{item.qty}</td>
                   <td className="py-2 px-4 text-right">₹{item.price}</td>
@@ -196,17 +205,17 @@ export default function InvoiceDetailsPage() {
       </div>
 
       {/* 💰 Payment Info */}
-      <div className="bg-[#141124] border border-white/10 rounded-xl p-5 mt-8">
-        <h2 className="text-lg font-semibold mb-3 text-indigo-400">
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mt-8">
+        <h2 className="text-lg font-semibold mb-3 text-amber-700">
           Payment Details
         </h2>
-        <p className="text-gray-300 whitespace-pre-wrap">
+        <p className="text-gray-800 whitespace-pre-wrap">
           {invoice.paymentDetails || "No payment details provided."}
         </p>
       </div>
 
       {/* 💵 Total */}
-      <div className="text-right text-2xl font-bold text-indigo-400 mt-6">
+      <div className="text-right text-2xl font-bold text-amber-700 mt-6">
         Total: ₹{invoice.total}
       </div>
     </div>

@@ -119,18 +119,18 @@ export default function NewInvoicePage() {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-12 bg-[#141021]/90 backdrop-blur-lg border border-white/10 rounded-2xl p-8 shadow-lg">
-      <h1 className="text-2xl font-semibold mb-6 text-white flex items-center gap-2">
+    <div className="max-w-xl mx-auto mt-12 bg-white border border-gray-200 rounded-2xl p-8 shadow-lg">
+      <h1 className="text-2xl font-semibold mb-6 text-gray-900 flex items-center gap-2">
         🧾 Create New Invoice
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <div>
-          <h2 className="text-lg font-semibold mb-3 text-white">Company</h2>
+          <h2 className="text-lg font-semibold mb-3 text-gray-900">Company</h2>
           <select
             value={companyId}
             onChange={(e) => setCompanyId(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
           >
             <option value="">Select a company</option>
             {companies.map((company) => (
@@ -143,11 +143,11 @@ export default function NewInvoicePage() {
 
         {/* Client Selection */}
         <div>
-          <h2 className="text-lg font-semibold mb-3 text-white">Client</h2>
+          <h2 className="text-lg font-semibold mb-3 text-gray-900">Client</h2>
           <select
             value={clientId}
             onChange={(e) => setClientId(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
           >
             <option value="">Select a client</option>
             {clients.map((client) => (
@@ -160,7 +160,7 @@ export default function NewInvoicePage() {
 
         {/* Items */}
         <div>
-          <h2 className="text-lg font-semibold mb-3 text-white">Items</h2>
+          <h2 className="text-lg font-semibold mb-3 text-gray-900">Items</h2>
           {items.map((item, index) => (
             <div key={index} className="flex gap-3 mb-4">
               <input
@@ -170,7 +170,7 @@ export default function NewInvoicePage() {
                 onChange={(e) =>
                   handleItemChange(index, "description", e.target.value)
                 }
-                className="flex-1 px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
               <input
                 type="number"
@@ -179,13 +179,14 @@ export default function NewInvoicePage() {
                 onChange={(e) =>
                   handleItemChange(index, "price", e.target.value)
                 }
-                className="w-28 px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-28 px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
+
               {items.length > 1 && (
                 <button
                   type="button"
                   onClick={() => removeItem(index)}
-                  className="text-red-500 hover:text-red-400 mt-2"
+                  className="text-red-500 hover:text-red-600 mt-2"
                 >
                   <Trash2 size={22} />
                 </button>
@@ -195,68 +196,69 @@ export default function NewInvoicePage() {
           <button
             type="button"
             onClick={addItem}
-            className="flex items-center gap-2 text-indigo-400 hover:text-indigo-300 text-sm font-medium"
+            className="flex items-center gap-2 text-amber-600 hover:text-amber-700 text-sm font-medium"
           >
             <PlusCircle size={18} /> Add Item
           </button>
         </div>
+
         {/* Due Date */}
         <div>
-          <h2 className="text-lg font-semibold mb-3 text-white">Due Date</h2>
+          <h2 className="text-lg font-semibold mb-3 text-gray-900">Due Date</h2>
           <DatePicker
             selected={dueDate ? new Date(dueDate) : null}
             // @ts-ignore
             onChange={(date: Date) =>
               setDueDate(date.toISOString().split("T")[0])
             }
-            className="w-full px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
             placeholderText="Select due date"
             dateFormat="yyyy-MM-dd"
             minDate={new Date()}
           />
         </div>
 
-        {/* 🧾 Payment Details (Now after Items) */}
+        {/* Payment Details */}
         <div>
-          <h2 className="text-lg font-semibold mb-3 text-white">
+          <h2 className="text-lg font-semibold mb-3 text-gray-900">
             Payment Details
           </h2>
           <textarea
             value={paymentDetails}
             onChange={(e) => setPaymentDetails(e.target.value)}
             placeholder="Enter payment instructions (e.g., UPI, bank, PayPal)"
-            className="w-full px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[100px]"
+            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500 min-h-[100px]"
           />
         </div>
 
         {/* Tax */}
         <div>
-          <h2 className="text-lg font-semibold mb-3 text-white">Tax (%)</h2>
+          <h2 className="text-lg font-semibold mb-3 text-gray-900">Tax (%)</h2>
           <input
             type="number"
             placeholder="e.g., 18"
-            className="w-full px-4 py-3 rounded-lg bg-[#1d162f] border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
             value={tax}
             onChange={(e) => setTax(parseFloat(e.target.value))}
           />
         </div>
 
         {/* Total */}
-        <div className="text-right text-gray-300 text-lg">
+        <div className="text-right text-gray-900 text-lg">
           Total:{" "}
-          <span className="text-indigo-400 font-semibold">
+          <span className="text-amber-600 font-semibold">
             ₹{totalAmount.toFixed(2)}
           </span>
         </div>
 
         {/* Error */}
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && <p className="text-red-500 text-sm">{error}</p>}
 
         {/* Submit */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#6a3df0] hover:bg-[#5930d4] transition-all py-3 rounded-lg font-semibold text-white text-lg shadow-lg shadow-indigo-500/30"
+          className="w-full bg-amber-600 hover:bg-amber-700 transition-all py-3 rounded-lg font-semibold text-white text-lg shadow-lg shadow-amber-300/30"
         >
           {loading ? "Creating..." : "Create Invoice"}
         </button>

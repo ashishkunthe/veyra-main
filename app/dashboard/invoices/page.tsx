@@ -49,35 +49,36 @@ export default function InvoicesPage() {
 
   if (loading) {
     return (
-      <div className="text-center text-gray-400 text-lg mt-10">
+      <div className="text-center text-gray-500 text-lg mt-10">
         Loading invoices...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen text-white">
+    <div className="min-h-screen text-gray-900">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <span className="inline-flex items-center justify-center w-6 h-6 rounded bg-indigo-600/20 text-indigo-400">
+          <span className="inline-flex items-center justify-center w-7 h-7 rounded bg-amber-100 text-amber-700">
             <FileText className="animate-pulse-slow" />
           </span>
           Invoices
         </h1>
+
         <Link
           href="/dashboard/invoices/new"
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg transition text-sm font-medium"
+          className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg transition text-sm font-medium"
         >
           <PlusCircle size={18} /> New Invoice
         </Link>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto bg-[#141124] border border-white/10 rounded-2xl">
+      <div className="overflow-x-auto bg-white border border-gray-200 rounded-xl shadow-md">
         <table className="w-full text-left min-w-[700px]">
           <thead>
-            <tr className="text-gray-400 text-sm border-b border-white/10">
+            <tr className="text-gray-600 text-sm border-b border-gray-200 bg-amber-50/40">
               <th className="p-4 font-medium">Client</th>
               <th className="p-4 font-medium">Total</th>
               <th className="p-4 font-medium">Status</th>
@@ -85,10 +86,11 @@ export default function InvoicesPage() {
               <th className="p-4 text-right font-medium">Actions</th>
             </tr>
           </thead>
+
           <tbody>
             {invoices.length === 0 ? (
               <tr>
-                <td colSpan={5} className="text-center p-8 text-gray-400">
+                <td colSpan={5} className="text-center p-8 text-gray-500">
                   No invoices found.
                 </td>
               </tr>
@@ -96,39 +98,37 @@ export default function InvoicesPage() {
               invoices.map((invoice) => (
                 <tr
                   key={invoice.id}
-                  className="border-b border-white/5 hover:bg-white/5 transition"
+                  className="border-b border-gray-100 hover:bg-amber-50/40 transition"
                 >
-                  <td className="p-4 text-gray-200">{invoice.clientName}</td>
-                  <td className="p-4 text-gray-300">
-                    ₹{invoice.total.toFixed(2)}
-                  </td>
+                  <td className="p-4 font-medium">{invoice.clientName}</td>
+                  <td className="p-4">₹{invoice.total.toFixed(2)}</td>
                   <td className="p-4">
                     <span
-                      className={`px-3 py-1 text-xs font-medium rounded-full ${
+                      className={`px-3 py-1 text-xs font-semibold rounded-full ${
                         invoice.status === "paid"
-                          ? "bg-green-500/20 text-green-400"
+                          ? "bg-green-100 text-green-700"
                           : invoice.status === "pending"
-                          ? "bg-yellow-500/20 text-yellow-300"
-                          : "bg-red-500/20 text-red-400"
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-red-100 text-red-700"
                       }`}
                     >
                       {invoice.status.charAt(0).toUpperCase() +
                         invoice.status.slice(1)}
                     </span>
                   </td>
-                  <td className="p-4 text-gray-300">
+                  <td className="p-4">
                     {new Date(invoice.dueDate).toLocaleDateString()}
                   </td>
                   <td className="p-4 text-right flex items-center gap-3 justify-end">
                     <Link
                       href={`/dashboard/invoices/${invoice.id}`}
-                      className="text-gray-400 hover:text-indigo-400 transition"
+                      className="text-gray-600 hover:text-amber-600 transition"
                     >
                       <Eye size={18} />
                     </Link>
                     <button
                       onClick={() => deleteInvoice(invoice.id)}
-                      className="text-gray-400 hover:text-red-500 transition"
+                      className="text-gray-600 hover:text-red-600 transition"
                     >
                       <Trash2 size={18} />
                     </button>

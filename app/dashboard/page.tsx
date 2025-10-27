@@ -1,47 +1,83 @@
 "use client";
-
+import { useEffect, useState } from "react";
+import axios from "axios";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { Rocket } from "lucide-react";
 
 export default function DashboardPage() {
+  const [stats, setStats] = useState({
+    totalRevenue: 0,
+    totalInvoices: 0,
+    openInvoices: 0,
+    totalClients: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:4000/dashboard/stats", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setStats(res.data);
+      } catch (err) {
+        console.error("Error fetching dashboard stats:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  if (loading) {
+    return (
+      <ProtectedRoute>
+        <div className="min-h-screen flex items-center justify-center text-gray-600">
+          Loading dashboard...
+        </div>
+      </ProtectedRoute>
+    );
+  }
+
   return (
     <ProtectedRoute>
-      <div className="animate-fadeIn min-h-screen text-white">
-        <h1 className="flex items-center gap-2 text-2xl md:text-4xl font-bold mb-6">
+      <div className="min-h-screen bg-white text-gray-900 px-6 animate-fadeIn">
+        <h1 className="flex items-center gap-2 text-3xl md:text-4xl font-bold mb-8">
           Welcome to Veyra Dashboard
-          <Rocket className="w-7 h-7 text-purple-400" />
+          <Rocket className="w-7 h-7 text-amber-500" />
         </h1>
 
-        {/* 📊 Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          <div className="p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md hover:scale-105 transition">
-            <h2 className="text-lg font-semibold mb-2 text-gray-300">
+        {/* Stat Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Total Revenue */}
+          <div className="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-amber-400/20 hover:border-amber-400 transition">
+            <h2 className="text-sm font-semibold mb-2 text-gray-500">
               Total Revenue
             </h2>
-            <p className="text-3xl md:text-4xl font-bold text-purple-300">
-              $45,231.89
-            </p>
-            <p className="text-sm text-green-400 mt-1">
-              +20.1% from last month
+            <p className="text-3xl font-bold text-amber-600">
+              ₹{stats.totalRevenue.toLocaleString()}
             </p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md hover:scale-105 transition">
-            <h2 className="text-lg font-semibold mb-2 text-gray-300">
-              Subscriptions
+          {/* Total Clients */}
+          <div className="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-amber-400/20 hover:border-amber-400 transition">
+            <h2 className="text-sm font-semibold mb-2 text-gray-500">
+              Total Clients
             </h2>
-            <p className="text-3xl md:text-4xl font-bold text-indigo-300">
-              2,345
+            <p className="text-3xl font-bold text-gray-900">
+              {stats.totalClients}
             </p>
-            <p className="text-sm text-green-400 mt-1">+120 this month</p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md hover:scale-105 transition">
-            <h2 className="text-lg font-semibold mb-2 text-gray-300">
+          {/* Open Invoices */}
+          <div className="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-amber-400/20 hover:border-amber-400 transition">
+            <h2 className="text-sm font-semibold mb-2 text-gray-500">
               Open Invoices
             </h2>
-            <p className="text-3xl md:text-4xl font-bold text-yellow-300">12</p>
-            <p className="text-sm text-orange-400 mt-1">3 overdue</p>
+            <p className="text-3xl font-bold text-amber-500">
+              {stats.openInvoices}
+            </p>
           </div>
         </div>
       </div>
