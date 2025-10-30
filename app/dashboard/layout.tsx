@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   CreditCard,
+  UserRound,
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -36,6 +37,7 @@ export default function DashboardLayout({
     { href: "/dashboard/company", icon: Building2, label: "Company" },
     { href: "/dashboard/analytics", icon: BarChart3, label: "Analytics" },
     { href: "/dashboard/pricing", icon: CreditCard, label: "Pricing" },
+    { href: "/dashboard/profile", icon: UserRound, label: "Profile" },
   ];
 
   return (
@@ -61,6 +63,7 @@ export default function DashboardLayout({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Image src="/logo.svg" alt="Veyra" width={38} height={38} />
+
             <h1 className="text-xl font-bold">Veyra</h1>
           </div>
           <button
@@ -105,7 +108,7 @@ export default function DashboardLayout({
 
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white transition text-sm"
+            className="flex items-center gap-2 bg-red-500 hover:bg-red-500 px-4 py-2 rounded-lg text-white transition text-sm"
           >
             <LogOut size={18} />
             Logout

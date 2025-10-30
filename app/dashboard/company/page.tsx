@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Building2, Save } from "lucide-react";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function CompanyPage() {
   const [companyId, setCompanyId] = useState<string | null>(null);
@@ -69,80 +70,82 @@ export default function CompanyPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#F9FAFB] text-gray-900 px-4">
-      <h1 className="text-2xl font-bold mb-8 flex items-center gap-2 text-amber-600">
-        <Building2 className="text-amber-600" /> Company Details
-      </h1>
+    <ProtectedRoute>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F9FAFB] text-gray-900 px-4">
+        <h1 className="text-2xl font-bold mb-8 flex items-center gap-2 text-amber-600">
+          <Building2 className="text-amber-600" /> Company Details
+        </h1>
 
-      <form
-        onSubmit={handleSave}
-        className="w-full max-w-3xl bg-white border border-amber-300/40 rounded-2xl p-8 space-y-6 shadow-lg shadow-amber-200/30"
-      >
-        {/* Company Name */}
-        <div>
-          <label className="block text-sm font-medium text-amber-700 mb-2">
-            Company Name
-          </label>
-          <input
-            type="text"
-            className="w-full px-4 py-3 rounded-lg bg-white border border-amber-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 text-gray-900"
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-          />
-        </div>
+        <form
+          onSubmit={handleSave}
+          className="w-full max-w-3xl bg-white border border-amber-300/40 rounded-2xl p-8 space-y-6 shadow-lg shadow-amber-200/30"
+        >
+          {/* Company Name */}
+          <div>
+            <label className="block text-sm font-medium text-amber-700 mb-2">
+              Company Name
+            </label>
+            <input
+              type="text"
+              className="w-full px-4 py-3 rounded-lg bg-white border border-amber-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 text-gray-900"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+            />
+          </div>
 
-        {/* Address */}
-        <div>
-          <label className="block text-sm font-medium text-amber-700 mb-2">
-            Address
-          </label>
-          <textarea
-            rows={3}
-            className="w-full px-4 py-3 rounded-lg bg-white border border-amber-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 text-gray-900"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-          />
-        </div>
+          {/* Address */}
+          <div>
+            <label className="block text-sm font-medium text-amber-700 mb-2">
+              Address
+            </label>
+            <textarea
+              rows={3}
+              className="w-full px-4 py-3 rounded-lg bg-white border border-amber-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 text-gray-900"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </div>
 
-        {/* Tax Info */}
-        <div>
-          <label className="block text-sm font-medium text-amber-700 mb-2">
-            Tax Info
-          </label>
-          <input
-            type="text"
-            className="w-full px-4 py-3 rounded-lg bg-white border border-amber-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 text-gray-900"
-            value={taxId}
-            onChange={(e) => setTaxId(e.target.value)}
-          />
-        </div>
+          {/* Tax Info */}
+          <div>
+            <label className="block text-sm font-medium text-amber-700 mb-2">
+              Tax Info
+            </label>
+            <input
+              type="text"
+              className="w-full px-4 py-3 rounded-lg bg-white border border-amber-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 text-gray-900"
+              value={taxId}
+              onChange={(e) => setTaxId(e.target.value)}
+            />
+          </div>
 
-        {/* Logo URL */}
-        <div>
-          <label className="block text-sm font-medium text-amber-700 mb-2">
-            Logo URL (optional)
-          </label>
-          <input
-            type="text"
-            className="w-full px-4 py-3 rounded-lg bg-white border border-amber-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 text-gray-900"
-            value={logoUrl}
-            onChange={(e) => setLogoUrl(e.target.value)}
-          />
-        </div>
+          {/* Logo URL */}
+          <div>
+            <label className="block text-sm font-medium text-amber-700 mb-2">
+              Logo URL (optional)
+            </label>
+            <input
+              type="text"
+              className="w-full px-4 py-3 rounded-lg bg-white border border-amber-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 text-gray-900"
+              value={logoUrl}
+              onChange={(e) => setLogoUrl(e.target.value)}
+            />
+          </div>
 
-        {message && (
-          <p className="text-sm font-medium text-green-600">{message}</p>
-        )}
+          {message && (
+            <p className="text-sm font-medium text-green-600">{message}</p>
+          )}
 
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 px-6 py-3 rounded-lg font-semibold text-white transition-all"
-          >
-            <Save size={20} /> Save Changes
-          </button>
-        </div>
-      </form>
-    </div>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 px-6 py-3 rounded-lg font-semibold text-white transition-all"
+            >
+              <Save size={20} /> Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </ProtectedRoute>
   );
 }

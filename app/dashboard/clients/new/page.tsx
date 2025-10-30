@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Users, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function NewClientPage() {
   const router = useRouter();
@@ -45,87 +46,91 @@ export default function NewClientPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen items-center justify-center bg-transparent text-white px-4">
-      {/* Header */}
-      <div className="w-full max-w-md flex items-center justify-between mb-6">
-        <h1 className="text-xl font-semibold flex items-center gap-2">
-          <Users className="w-5 h-5 text-amber-400" />
-          Add New Client
-        </h1>
-        <Link
-          href="/dashboard/clients"
-          className="flex items-center gap-1 text-gray-400 hover:text-amber-400 transition text-sm"
-        >
-          <ArrowLeft size={16} />
-          Back
-        </Link>
-      </div>
-
-      {/* Card */}
-      <div className="w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10">
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Full Name */}
-          <div>
-            <label className="block text-sm text-gray-400 mb-2">
-              Full Name
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. John Doe"
-              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
-
-          {/* Email */}
-          <div>
-            <label className="block text-sm text-gray-400 mb-2">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. johndoe@example.com"
-              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
-
-          {/* Phone */}
-          <div>
-            <label className="block text-sm text-gray-400 mb-2">Phone</label>
-            <input
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="e.g.+9199XXXXXXXX"
-              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
-
-          {/* Address */}
-          <div>
-            <label className="block text-sm text-gray-400 mb-2">Address</label>
-            <input
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="e.g. New York"
-              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
-
-          {/* Error */}
-          {error && <p className="text-red-400 text-sm mt-1">{error}</p>}
-
-          {/* Submit */}
-          <button
-            type="submit"
-            className="w-full bg-amber-500 hover:bg-amber-600 transition-all duration-200 py-3 rounded-lg font-medium text-white mt-2"
+    <ProtectedRoute>
+      <div className="flex flex-col min-h-screen items-center justify-center bg-transparent text-white px-4">
+        {/* Header */}
+        <div className="w-full max-w-md flex items-center justify-between mb-6">
+          <h1 className="text-xl font-semibold flex items-center gap-2">
+            <Users className="w-5 h-5 text-amber-400" />
+            Add New Client
+          </h1>
+          <Link
+            href="/dashboard/clients"
+            className="flex items-center gap-1 text-gray-400 hover:text-amber-400 transition text-sm"
           >
-            Add Client
-          </button>
-        </form>
+            <ArrowLeft size={16} />
+            Back
+          </Link>
+        </div>
+
+        {/* Card */}
+        <div className="w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Full Name */}
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">
+                Full Name
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. John Doe"
+                className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="e.g. johndoe@example.com"
+                className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              />
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Phone</label>
+              <input
+                type="text"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="e.g.+9199XXXXXXXX"
+                className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              />
+            </div>
+
+            {/* Address */}
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">
+                Address
+              </label>
+              <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="e.g. New York"
+                className="w-full px-4 py-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              />
+            </div>
+
+            {/* Error */}
+            {error && <p className="text-red-400 text-sm mt-1">{error}</p>}
+
+            {/* Submit */}
+            <button
+              type="submit"
+              className="w-full bg-amber-500 hover:bg-amber-600 transition-all duration-200 py-3 rounded-lg font-medium text-white mt-2"
+            >
+              Add Client
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }
