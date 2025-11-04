@@ -27,11 +27,13 @@ export default function ClientDetailPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   useEffect(() => {
     const fetchClient = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`http://localhost:4000/clients/${params.id}`, {
+        const res = await fetch(`${backendUrl}/clients/${params.id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();

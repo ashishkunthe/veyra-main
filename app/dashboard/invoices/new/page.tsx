@@ -23,6 +23,8 @@ export default function NewInvoicePage() {
   const [isRecurring, setIsRecurring] = useState(false);
   const [recurrenceInterval, setRecurrenceInterval] = useState("monthly");
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   const subtotal = items.reduce(
     (acc, item) => acc + (parseFloat(item.price) || 0),
     0
@@ -34,10 +36,10 @@ export default function NewInvoicePage() {
       try {
         const token = localStorage.getItem("token");
         const [companyRes, clientRes] = await Promise.all([
-          axios.get("http://localhost:4000/company", {
+          axios.get(`${backendUrl}/company`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:4000/clients", {
+          axios.get(`${backendUrl}/clients`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -90,7 +92,7 @@ export default function NewInvoicePage() {
       const token = localStorage.getItem("token");
       const selectedClient = clients.find((c) => c.id === clientId);
       await axios.post(
-        "http://localhost:4000/invoices",
+        `${backendUrl}/invoices`,
         {
           companyId,
           clientId,

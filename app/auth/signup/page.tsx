@@ -10,6 +10,8 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("token")) {
       router.push("/dashboard");
@@ -19,7 +21,7 @@ export default function SignupPage() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:4000/auth/signup`, {
+      await axios.post(`${backendUrl}/auth/signup`, {
         name,
         email,
         password,

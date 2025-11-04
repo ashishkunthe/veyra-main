@@ -13,11 +13,13 @@ export default function InvoiceDetailsPage() {
   const [downloading, setDownloading] = useState(false);
   const [sending, setSending] = useState(false);
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   useEffect(() => {
     const fetchInvoice = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`http://localhost:4000/invoices/${id}`, {
+        const res = await axios.get(`${backendUrl}/invoices/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setInvoice(res.data);
@@ -34,7 +36,7 @@ export default function InvoiceDetailsPage() {
     try {
       setDownloading(true);
       const token = localStorage.getItem("token");
-      const res = await axios.get(`http://localhost:4000/invoices/${id}/pdf`, {
+      const res = await axios.get(`${backendUrl}/invoices/${id}/pdf`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -56,7 +58,7 @@ export default function InvoiceDetailsPage() {
       setSending(true);
       const token = localStorage.getItem("token");
       await axios.post(
-        `http://localhost:4000/invoices/${id}/send`,
+        `${backendUrl}/invoices/${id}/send`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -73,7 +75,7 @@ export default function InvoiceDetailsPage() {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:4000/invoices/${id}`,
+        `${backendUrl}/invoices/${id}`,
         { status: "paid" },
         { headers: { Authorization: `Bearer ${token}` } }
       );

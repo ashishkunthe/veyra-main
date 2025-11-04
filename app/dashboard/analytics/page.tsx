@@ -29,6 +29,8 @@ export default function AnalyticsPage() {
   const [monthlyRevenue, setMonthlyRevenue] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
@@ -36,13 +38,13 @@ export default function AnalyticsPage() {
         if (!token) return;
 
         const [overviewRes, statusRes, revenueRes] = await Promise.all([
-          axios.get("http://localhost:4000/analytics/overview", {
+          axios.get(`${backendUrl}/analytics/overview`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:4000/analytics/status-summary", {
+          axios.get(`${backendUrl}/analytics/status-summary`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:4000/analytics/monthly-revenue", {
+          axios.get(`${backendUrl}/analytics/monthly-revenue`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);

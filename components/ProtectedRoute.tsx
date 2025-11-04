@@ -11,6 +11,8 @@ export default function ProtectedRoute({
   const [isChecking, setIsChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   useEffect(() => {
     const verifyAuth = async () => {
       try {
@@ -21,7 +23,7 @@ export default function ProtectedRoute({
           router.replace("/auth/login");
           return;
         }
-        const res = await fetch("http://localhost:4000/auth/verify", {
+        const res = await fetch(`${backendUrl}/auth/verify`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

@@ -9,11 +9,13 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:4000/profile", {
+        const res = await axios.get(`${backendUrl}/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProfile(res.data);
@@ -37,7 +39,7 @@ export default function ProfilePage() {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        "http://localhost:4000/profile",
+        `${backendUrl}/profile`,
         {
           name: profile.name,
           phone: profile.phone,

@@ -16,11 +16,13 @@ export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   useEffect(() => {
     const fetchClients = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`http://localhost:4000/clients`, {
+        const res = await fetch(`${backendUrl}/clients`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -47,7 +49,7 @@ export default function ClientsPage() {
   const deleteClient = async (id: string) => {
     try {
       const token = localStorage.getItem("token");
-      await fetch(`http://localhost:4000/clients/${id}`, {
+      await fetch(`${backendUrl}/clients/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

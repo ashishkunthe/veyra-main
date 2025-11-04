@@ -12,6 +12,8 @@ export default function CompanyPage() {
   const [logoUrl, setLogoUrl] = useState("");
   const [message, setMessage] = useState("");
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -19,7 +21,7 @@ export default function CompanyPage() {
   useEffect(() => {
     const fetchCompany = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/company`, {
+        const res = await axios.get(`${backendUrl}/company`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = res.data;
@@ -47,17 +49,15 @@ export default function CompanyPage() {
 
       if (companyId) {
         // Update existing company
-        await axios.put(`http://localhost:4000/company/${companyId}`, body, {
+        await axios.put(`${backendUrl}/company/${companyId}`, body, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMessage("✅ Company info updated successfully!");
       } else {
         // Create new company
-        const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/company`,
-          body,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const res = await axios.post(`${backendUrl}/company`, body, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setCompanyId(res.data.id);
         setMessage("✅ Company created successfully!");
       }

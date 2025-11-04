@@ -17,10 +17,12 @@ export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   const fetchInvoices = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:4000/invoices", {
+      const res = await axios.get(`${backendUrl}/invoices`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setInvoices(res.data);
@@ -39,7 +41,7 @@ export default function InvoicesPage() {
     if (!confirm("Are you sure you want to delete this invoice?")) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:4000/invoices/${id}`, {
+      await axios.delete(`${backendUrl}/invoices/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setInvoices((prev) => prev.filter((inv) => inv.id !== id));

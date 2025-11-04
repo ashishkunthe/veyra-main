@@ -11,15 +11,17 @@ const PLAN_IDS = {
 
 export default function PricingPage() {
   const [currentPlan, setCurrentPlan] = useState<any>(null);
-  const [loadingPlan, setLoadingPlan] = useState<"starter" | "pro" | null>(
-    null
-  );
+  const [loadingPlan, setLoadingPlan] = useState<
+    "starter" | "pro" | "free" | null
+  >(null);
+
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   useEffect(() => {
     const fetchStatus = async () => {
       const token = localStorage.getItem("token");
       if (!token) return;
-      const res = await axios.get("http://localhost:4000/razorpay/status", {
+      const res = await axios.get(`${backendUrl}/razorpay/status`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCurrentPlan(res.data);
@@ -36,7 +38,7 @@ export default function PricingPage() {
         return;
       }
       const res = await axios.post(
-        "http://localhost:4000/razorpay/create-subscription",
+        `${backendUrl}/razorpay/create-subscription`,
         { planId: PLAN_IDS[planType] },
         { headers: { Authorization: `Bearer ${token}` } }
       );

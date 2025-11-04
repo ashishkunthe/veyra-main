@@ -10,6 +10,8 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   useEffect(() => {
     if (localStorage.getItem("token")) {
       router.push("/dashboard");
@@ -19,7 +21,7 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`http://localhost:4000/auth/login`, {
+      const res = await axios.post(`${backendUrl}/auth/login`, {
         email,
         password,
       });

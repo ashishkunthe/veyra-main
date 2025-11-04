@@ -13,6 +13,8 @@ export default function NewClientPage() {
   const [address, setAddress] = useState("");
   const [error, setError] = useState("");
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !phone || !address) {
@@ -22,7 +24,7 @@ export default function NewClientPage() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:4000/clients`, {
+      const res = await fetch(`${backendUrl}/clients`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

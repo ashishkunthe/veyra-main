@@ -15,6 +15,8 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -22,10 +24,10 @@ export default function DashboardPage() {
 
         // Fetch dashboard stats
         const [statsRes, profileRes] = await Promise.all([
-          axios.get("http://localhost:4000/dashboard/stats", {
+          axios.get(`${backendUrl}/dashboard/stats`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:4000/profile", {
+          axios.get(`${backendUrl}/profile`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
