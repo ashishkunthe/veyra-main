@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Download, CheckCircle2, Send } from "lucide-react";
 import axios from "axios";
-import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function InvoiceDetailsPage() {
   const { id } = useParams();

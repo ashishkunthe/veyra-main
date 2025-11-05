@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import axios from "axios";
-import ProtectedRoute from "@/components/ProtectedRoute";
+
 
 const PLAN_IDS = {
   starter: "plan_RQWtzIDOuFsegM",

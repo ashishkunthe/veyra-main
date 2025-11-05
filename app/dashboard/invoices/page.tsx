@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { PlusCircle, Eye, Trash2, FileText } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
-import ProtectedRoute from "@/components/ProtectedRoute";
 
 interface Invoice {
   id: string;
@@ -52,11 +51,9 @@ export default function InvoicesPage() {
 
   if (loading) {
     return (
-      <ProtectedRoute>
-        <div className="text-center text-gray-500 text-lg mt-10">
-          Loading invoices...
-        </div>
-      </ProtectedRoute>
+      <div className="text-center text-gray-500 text-lg mt-10">
+        Loading invoices...
+      </div>
     );
   }
 

@@ -21,7 +21,6 @@ import {
   BarChart,
   Bar,
 } from "recharts";
-import ProtectedRoute from "../../../components/ProtectedRoute";
 
 export default function AnalyticsPage() {
   const [overview, setOverview] = useState<any>(null);

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { PlusCircle, Trash2 } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function NewInvoicePage() {
   const router = useRouter();

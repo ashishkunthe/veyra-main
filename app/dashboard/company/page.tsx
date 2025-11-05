@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Building2, Save } from "lucide-react";
-import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function CompanyPage() {
   const [companyId, setCompanyId] = useState<string | null>(null);

@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { PlusCircle, Eye, Trash2, Users } from "lucide-react";
 import Link from "next/link";
-import ProtectedRoute from "@/components/ProtectedRoute";
 
 interface Client {
   _id: string;

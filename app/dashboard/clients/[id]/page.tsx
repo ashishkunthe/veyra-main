@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Mail, Building2, FileText, Briefcase } from "lucide-react";
 import Link from "next/link";
-import axios from "axios";
-import ProtectedRoute from "@/components/ProtectedRoute";
 
 interface Client {
   id: string;
@@ -57,21 +55,17 @@ export default function ClientDetailPage() {
 
   if (loading) {
     return (
-      <ProtectedRoute>
-        <div className="text-gray-400 text-lg mt-10 text-center">
-          Loading client details...
-        </div>
-      </ProtectedRoute>
+      <div className="text-gray-400 text-lg mt-10 text-center">
+        Loading client details...
+      </div>
     );
   }
 
   if (!client) {
     return (
-      <ProtectedRoute>
-        <div className="text-red-400 text-lg mt-10 text-center">
-          Client not found.
-        </div>
-      </ProtectedRoute>
+      <div className="text-red-400 text-lg mt-10 text-center">
+        Client not found.
+      </div>
     );
   }
 
