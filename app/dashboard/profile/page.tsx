@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Image from "next/image";
 import { Save, Loader2, UserRound } from "lucide-react";
 
 interface Profile {
@@ -98,7 +97,7 @@ export default function ProfilePage() {
         {/* Avatar */}
         <div className="flex justify-center mb-6">
           {profile.profileImageUrl ? (
-            <Image
+            <img
               src={profile.profileImageUrl}
               alt={profile.name}
               width={112}
