@@ -70,7 +70,7 @@ export default function OnboardingModal({
           </div>
 
           <h2 className="text-2xl font-bold text-gray-900">
-            Welcome! Let's get you set up
+            Welcome! Let&apos;s get you set up
           </h2>
 
           <p className="mt-2 text-gray-700 font-medium">

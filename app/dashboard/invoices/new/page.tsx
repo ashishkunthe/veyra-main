@@ -6,16 +6,33 @@ import { PlusCircle, Trash2 } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+interface Company {
+  id: string;
+  name: string;
+}
+
+interface Client {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface Item {
+  description: string;
+  price: string;
+}
+
 export default function NewInvoicePage() {
   const router = useRouter();
-  const [companies, setCompanies] = useState<any[]>([]);
-  const [clients, setClients] = useState<any[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
   const [companyId, setCompanyId] = useState("");
   const [clientId, setClientId] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [clientEmail, setClientEmail] = useState("");
   const [paymentDetails, setPaymentDetails] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [items, setItems] = useState([{ description: "", price: "" }]);
+  const [items, setItems] = useState<Item[]>([{ description: "", price: "" }]);
   const [tax, setTax] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -51,7 +68,7 @@ export default function NewInvoicePage() {
       }
     };
     fetchData();
-  }, []);
+  }, [backendUrl]);
 
   useEffect(() => {
     if (clientId) {
@@ -112,9 +129,11 @@ export default function NewInvoicePage() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       router.push("/dashboard/invoices");
-    } catch (err: any) {
-      console.error(err);
-      setError(err.response?.data?.message || "Failed to create invoice");
+    } catch (err) {
+      const error = err as unknown as {
+        response?: { data?: { message?: string } };
+      };
+      setError(error.response?.data?.message || "Failed to create invoice");
     } finally {
       setLoading(false);
     }
@@ -247,10 +266,11 @@ export default function NewInvoicePage() {
           <h2 className="text-lg font-semibold mb-3 text-gray-900">Due Date</h2>
           <DatePicker
             selected={dueDate ? new Date(dueDate) : null}
-            // @ts-ignore
-            onChange={(date: Date) =>
-              setDueDate(date.toISOString().split("T")[0])
-            }
+            onChange={(date: Date | null) => {
+              if (date) {
+                setDueDate(date.toISOString().split("T")[0]);
+              }
+            }}
             className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
             placeholderText="Select due date"
             dateFormat="yyyy-MM-dd"

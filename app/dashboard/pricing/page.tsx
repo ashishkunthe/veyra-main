@@ -3,14 +3,17 @@ import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import axios from "axios";
 
-
 const PLAN_IDS = {
   starter: "plan_RQWtzIDOuFsegM",
   pro: "plan_RQWuo7mIXF9QzV",
 };
 
+interface PlanStatus {
+  planName: string;
+}
+
 export default function PricingPage() {
-  const [currentPlan, setCurrentPlan] = useState<any>(null);
+  const [currentPlan, setCurrentPlan] = useState<PlanStatus | null>(null);
   const [loadingPlan, setLoadingPlan] = useState<
     "starter" | "pro" | "free" | null
   >(null);
@@ -27,7 +30,7 @@ export default function PricingPage() {
       setCurrentPlan(res.data);
     };
     fetchStatus();
-  }, []);
+  }, [backendUrl]);
 
   const handleSubscribe = async (planType: "starter" | "pro") => {
     try {
@@ -44,9 +47,13 @@ export default function PricingPage() {
       );
       const subscription = res.data.subscription;
       window.location.href = subscription.short_url;
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert(err.response?.data?.message || "Subscription failed");
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.message || "Subscription failed");
+      } else {
+        alert("Subscription failed");
+      }
     } finally {
       setLoadingPlan(null);
     }

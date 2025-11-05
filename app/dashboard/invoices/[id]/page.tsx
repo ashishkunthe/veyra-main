@@ -4,10 +4,30 @@ import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Download, CheckCircle2, Send } from "lucide-react";
 import axios from "axios";
 
+interface InvoiceItem {
+  description: string;
+  qty: number;
+  price: number;
+}
+
+interface Invoice {
+  id: string;
+  createdAt: string;
+  status: "paid" | "pending" | "overdue";
+  isRecurring: boolean;
+  recurrenceInterval?: string | null;
+  clientName: string;
+  clientEmail: string;
+  dueDate: string;
+  items: InvoiceItem[];
+  paymentDetails: string;
+  total: number;
+}
+
 export default function InvoiceDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
-  const [invoice, setInvoice] = useState<any>(null);
+  const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [sending, setSending] = useState(false);
@@ -29,7 +49,7 @@ export default function InvoiceDetailsPage() {
       }
     };
     fetchInvoice();
-  }, [id]);
+  }, [id, backendUrl]);
 
   const handleDownload = async () => {
     try {
@@ -78,7 +98,7 @@ export default function InvoiceDetailsPage() {
         { status: "paid" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setInvoice({ ...invoice, status: "paid" });
+      setInvoice((prev) => (prev ? { ...prev, status: "paid" } : prev));
       alert("✅ Invoice marked as paid!");
     } catch (err) {
       console.error("Error updating status:", err);
@@ -210,7 +230,7 @@ export default function InvoiceDetailsPage() {
               </tr>
             </thead>
             <tbody>
-              {invoice.items.map((item: any, i: number) => (
+              {invoice.items.map((item: InvoiceItem, i: number) => (
                 <tr
                   key={i}
                   className="border-b border-gray-200 hover:bg-amber-50/40 transition"

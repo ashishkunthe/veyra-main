@@ -6,7 +6,6 @@ import {
   Clock,
   AlertCircle,
   CheckCircle,
-  Users,
   TrendingUp,
 } from "lucide-react";
 import axios from "axios";
@@ -22,11 +21,30 @@ import {
   Bar,
 } from "recharts";
 
+interface OverviewData {
+  totalInvoices: number;
+}
+
+interface StatusSummaryData {
+  paid: number;
+  pending: number;
+  overdue: number;
+}
+
+interface MonthlyRevenueItem {
+  month: string;
+  revenue: number;
+}
+
 export default function AnalyticsPage() {
-  const [overview, setOverview] = useState<any>(null);
-  const [statusSummary, setStatusSummary] = useState<any>(null);
-  const [monthlyRevenue, setMonthlyRevenue] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [overview, setOverview] = useState<OverviewData | null>(null);
+  const [statusSummary, setStatusSummary] = useState<StatusSummaryData | null>(
+    null
+  );
+  const [monthlyRevenue, setMonthlyRevenue] = useState<MonthlyRevenueItem[]>(
+    []
+  );
+  const [loading, setLoading] = useState<boolean>(true);
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -59,7 +77,7 @@ export default function AnalyticsPage() {
     };
 
     fetchAnalytics();
-  }, []);
+  }, [backendUrl]);
 
   if (loading) {
     return (

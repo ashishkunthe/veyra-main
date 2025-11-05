@@ -43,7 +43,7 @@ export default function ProtectedRoute({
     };
 
     verifyAuth();
-  }, [router]);
+  }, [router, backendUrl]);
 
   // 🌀 Loading state while verifying
   if (isChecking) {

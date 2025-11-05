@@ -34,7 +34,7 @@ export default function InvoicesPage() {
 
   useEffect(() => {
     fetchInvoices();
-  }, []);
+  }, [backendUrl]);
 
   const deleteInvoice = async (id: string) => {
     if (!confirm("Are you sure you want to delete this invoice?")) return;

@@ -27,9 +27,10 @@ export default function LoginPage() {
       });
       localStorage.setItem("token", res.data.token);
       router.push("/dashboard");
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
       setError(
-        err.response?.data?.message ||
+        error.response?.data?.message ||
           "Invalid email or password. Please try again."
       );
     }

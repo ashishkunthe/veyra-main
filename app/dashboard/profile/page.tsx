@@ -1,25 +1,35 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Image from "next/image";
 import { Save, Loader2, UserRound } from "lucide-react";
 
+interface Profile {
+  name: string;
+  email: string;
+  phone?: string;
+  businessType?: string;
+  country?: string;
+  profileImageUrl?: string;
+}
+
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`${backendUrl}/profile`, {
+        const res = await axios.get<Profile>(`${backendUrl}/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProfile(res.data);
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Error fetching profile:", err);
         setError("Failed to load profile");
       } finally {
@@ -27,30 +37,28 @@ export default function ProfilePage() {
       }
     };
     fetchProfile();
-  }, []);
+  }, [backendUrl]);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!profile) return;
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  const handleSave = async (e: any) => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!profile) return;
+
     setSaving(true);
+
     try {
       const token = localStorage.getItem("token");
       await axios.put(
         `${backendUrl}/profile`,
-        {
-          name: profile.name,
-          phone: profile.phone,
-          businessType: profile.businessType,
-          country: profile.country,
-          profileImageUrl: profile.profileImageUrl,
-        },
+        { ...profile },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("✅ Profile updated successfully!");
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Error updating profile:", err);
       setError("Failed to update profile");
     } finally {
@@ -62,6 +70,14 @@ export default function ProfilePage() {
     return (
       <div className="flex items-center justify-center min-h-screen text-gray-400">
         <Loader2 className="animate-spin mr-2" /> Loading profile...
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="text-center text-red-500 mt-10">
+        Failed to load profile.
       </div>
     );
   }
@@ -82,14 +98,16 @@ export default function ProfilePage() {
         {/* Avatar */}
         <div className="flex justify-center mb-6">
           {profile.profileImageUrl ? (
-            <img
+            <Image
               src={profile.profileImageUrl}
-              alt={profile.name || "User"}
+              alt={profile.name}
+              width={112}
+              height={112}
               className="w-28 h-28 rounded-full border-4 border-amber-400 shadow-md object-cover bg-white"
             />
           ) : (
             <div className="w-28 h-28 rounded-full bg-amber-200/50 border border-amber-300 flex items-center justify-center text-4xl font-semibold text-amber-700 shadow-inner">
-              {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
+              {profile.name.charAt(0).toUpperCase()}
             </div>
           )}
         </div>
@@ -100,7 +118,7 @@ export default function ProfilePage() {
             <label className="text-sm text-amber-700">Full Name</label>
             <input
               name="name"
-              value={profile.name || ""}
+              value={profile.name}
               onChange={handleChange}
               className="w-full mt-1 px-4 py-3 rounded-lg bg-white border border-amber-300 focus:ring-2 focus:ring-amber-500 outline-none"
             />
@@ -156,16 +174,6 @@ export default function ProfilePage() {
               className="w-full mt-1 px-4 py-3 rounded-lg bg-white border border-amber-300 focus:ring-2 focus:ring-amber-500"
             />
           </div>
-
-          {/* {profile.profileImageUrl && (
-            <div className="flex justify-center mt-3">
-              <img
-                src={profile.profileImageUrl}
-                alt="Profile"
-                className="w-20 h-20 rounded-full border border-amber-300 object-cover bg-white"
-              />
-            </div>
-          )} */}
 
           <button
             type="submit"

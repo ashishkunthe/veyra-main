@@ -51,7 +51,7 @@ export default function ClientDetailPage() {
       }
     };
     fetchClient();
-  }, [params.id]);
+  }, [params.id, backendUrl]);
 
   if (loading) {
     return (

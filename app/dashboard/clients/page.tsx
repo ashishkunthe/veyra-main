@@ -11,6 +11,18 @@ interface Client {
   totalInvoices: number;
 }
 
+interface InvoiceItem {
+  id: string;
+}
+
+interface ClientApiResponse {
+  id: string;
+  name: string;
+  email: string;
+  address?: string;
+  invoices?: InvoiceItem[];
+}
+
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +38,7 @@ export default function ClientsPage() {
         });
         const data = await res.json();
         setClients(
-          data.map((c: any) => ({
+          data.map((c: ClientApiResponse) => ({
             _id: c.id,
             name: c.name,
             email: c.email,
@@ -43,7 +55,7 @@ export default function ClientsPage() {
     };
 
     fetchClients();
-  }, []);
+  }, [backendUrl]);
 
   const deleteClient = async (id: string) => {
     try {

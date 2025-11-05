@@ -46,7 +46,7 @@ export default function DashboardPage() {
     };
 
     fetchData();
-  }, []);
+  }, [backendUrl]);
 
   if (loading) {
     return (

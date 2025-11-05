@@ -30,13 +30,13 @@ export default function CompanyPage() {
         setTaxId(data.taxInfo);
         setLogoUrl(data.logoUrl);
       } catch (err) {
-        console.log("No company data yet — maybe new user.");
+        console.log("No company data yet — maybe new user.", err);
       }
     };
     fetchCompany();
-  }, [token]);
+  }, [token, backendUrl]);
 
-  const handleSave = async (e: any) => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const body = {
